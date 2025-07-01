@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix - Georgian Characters</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+        }
+
+        canvas {
+            display: block;
+            background: #000;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffaa;
+            font-size: 2rem;
+            text-align: center;
+            z-index: 10;
+            text-shadow: 0 0 20px #00ffaa;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .overlay h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .overlay p {
+            font-size: 1.2rem;
+            animation: glow 2s ease-in-out infinite alternate 0.5s;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px #00ffaa, 0 0 30px #00ffaa, 0 0 40px #00ffaa;
+            }
+            to {
+                text-shadow: 0 0 10px #00ffaa, 0 0 20px #00ffaa, 0 0 30px #00ffaa, 0 0 40px #00ffaa, 0 0 50px #00ffaa;
+            }
+        }
+
+        .cursor {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrixCanvas"></canvas>
+    
+    <div class="overlay">
+        <h1>მატრიცა</h1>
+        <p>საიდუმლო კოდი <span class="cursor">|</span></p>
+    </div>
+
+    <script>
+        // --- NEW: Hide overlay if in background mode ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'background') {
+                const overlay = document.querySelector('.overlay');
+                if (overlay) {
+                    overlay.style.display = 'none';
+                }
+            }
+        });
+
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Размеры canvas
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Грузинские символы
+        const georgianChars = 'აბგდევზთიკლმნოპჟრსტუფქღყშჩცძწჭხჯჰ';
+        const characters = georgianChars + '0123456789';
+
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+
+        // Массив для хранения позиций падающих символов
+        const drops = [];
+
+        // Инициализация позиций
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function draw() {
+            // Полупрозрачный черный фон для эффекта следа
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0fa'; // Голубовато-зеленый цвет
+            ctx.font = fontSize + 'px monospace';
+
+            // Рисуем символы
+            for (let i = 0; i < drops.length; i++) {
+                // Случайный символ
+                const text = characters[Math.floor(Math.random() * characters.length)];
+                
+                // Позиция символа
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Градиент яркости
+                const alpha = Math.random() * 0.5 + 0.5;
+                ctx.fillStyle = `rgba(0, 255, 170, ${alpha})`;
+                
+                // Добавляем свечение для некоторых символов
+                if (Math.random() > 0.98) {
+                    ctx.shadowColor = '#00ffaa';
+                    ctx.shadowBlur = 10;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+
+                ctx.fillText(text, x, y);
+
+                // Сброс позиции когда символ достигает низа экрана
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
+                // Увеличиваем позицию
+                drops[i]++;
+            }
+        }
+
+        // Анимация
+        setInterval(draw, 35);
+
+        // Изменение размера canvas при изменении размера окна
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            // Recalculate columns on resize
+            const newColumns = canvas.width / fontSize;
+            while(drops.length > newColumns) drops.pop();
+            while(drops.length < newColumns) drops.push(1);
+        });
+
+        // Интерактивность - добавляем новые потоки при клике
+        canvas.addEventListener('click', (e) => {
+            const column = Math.floor(e.clientX / fontSize);
+            if (column < drops.length) {
+                drops[column] = 1;
+            }
+        });
+
+        // Случайные вспышки
+        setInterval(() => {
+            const randomColumn = Math.floor(Math.random() * drops.length);
+            drops[randomColumn] = 1;
+        }, 100);
+    </script>
+</body>
+</html>

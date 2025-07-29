@@ -1,0 +1,20 @@
+# Перенаправляет все запросы к детальным страницам на универсальный шаблон detail.html
+/en/services/*    /detail.html    200
+/ka/services/*    /detail.html    200
+/ua/services/*    /detail.html    200
+/ru/services/*    /detail.html    200
+
+/en/portfolio/*   /detail.html    200
+/ka/portfolio/*   /detail.html    200
+/ua/portfolio/*   /detail.html    200
+/ru/portfolio/*   /detail.html    200
+
+/en/blog/*        /detail.html    200
+/ka/blog/*        /detail.html    200
+/ua/blog/*        /detail.html    200
+/ru/blog/*        /detail.html    200
+
+/en/contact/*     /detail.html    200
+/ka/contact/*     /detail.html    200
+/ua/contact/*     /detail.html    200
+/ru/contact/*     /detail.html    200

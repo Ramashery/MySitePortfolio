@@ -1,0 +1,9 @@
+# Правило для английских услуг
+/en/services/*    /en/service.html   200
+
+# Правило для русских услуг
+/ru/services/*    /ru/service.html   200
+
+# Добавьте сюда правила для других языков и разделов, если они понадобятся
+# /ka/services/*    /ka/service.html   200
+# /ua/services/*    /ua/service.html   200
